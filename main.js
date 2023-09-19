@@ -64,14 +64,13 @@ function ModifyItem1(e){
             for(var i=0;i<response.data.length;i++){
                 if(response.data[i].name === name){
                     id= response.data[i]._id;
-                    console.log(id)
+                    //console.log(id)
 
                 }
                 url = 'https://crudcrud.com/api/0e175eef7e044d61bbd9327343cc0dea/appointmentData/'
                 const urlMain = url+id;
-                console.log(urlMain);
-                axios.delete(urlMain).then((res)=>console.log(res))
-		    .catch((err)=>console.log(err));
+                //console.log(urlMain);
+                axios.delete(urlMain).then((response)=>console.log(response)).catch((err)=>console.log(err));
             }
         }).catch((err)=>{
             console.log(err);
@@ -84,16 +83,27 @@ function ModifyItem1(e){
 		var li = e.target.parentElement;
 		var text = li.innerText;
 		var individualText = text.split(":");
-		var email = individualText[1];
-		console.log(email);
-		var myObj1 = localStorage.getItem(email);
-		console.log(myObj1);
-		localStorage.removeItem(email);
-		myObj1DeStringfy = JSON.parse(myObj1);
-		console.log(myObj1DeStringfy);
-		document.getElementById('name').value=myObj1DeStringfy.name;
-		document.getElementById('email').value=myObj1DeStringfy.email;
-		document.getElementById('phone').value=myObj1DeStringfy.phone;
+		var name = individualText[0];
+		console.log(name);
+        axios.get('https://crudcrud.com/api/0e175eef7e044d61bbd9327343cc0dea/appointmentData')
+        .then((response)=>{
+            for(var i=0;i<response.data.length;i++){
+                if(response.data[i].name === name){
+                    id= response.data[i]._id;
+                    document.getElementById('name').value=response.data[i].name;
+		            document.getElementById('email').value=response.data[i].email;
+		            document.getElementById('phone').value=response.data[i].phone;
+                }
+                url = 'https://crudcrud.com/api/0e175eef7e044d61bbd9327343cc0dea/appointmentData/'
+                const urlMain = url+id;
+                //console.log(urlMain);
+                axios.delete(urlMain).then((response)=>console.log(response)).catch((err)=>console.log(err));
+            }
+        }).catch((err)=>{
+            console.log(err);
+        })
+		
+		
 		itemList.removeChild(li);
 	}
 }
