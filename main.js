@@ -13,7 +13,7 @@ function getValues(e){
 	    phone: phone
 	};
     showData(myObj);
-    axios.post("https://crudcrud.com/api/846860f27c384e9ead944223581c6784/appointmentData",myObj)
+    axios.post("https://crudcrud.com/api/0e175eef7e044d61bbd9327343cc0dea/appointmentData",myObj)
     .then((res)=>console.log(res))
     .catch((err)=>console.log(err));
 }
@@ -35,7 +35,7 @@ function showData(obj){
 }
 
 window.addEventListener('DOMContentLoaded',()=>{
-    axios.get('https://crudcrud.com/api/846860f27c384e9ead944223581c6784/appointmentData')
+    axios.get('https://crudcrud.com/api/0e175eef7e044d61bbd9327343cc0dea/appointmentData')
     .then((response)=>{
         console.log(response);
         for(var i=0;i<response.data.length;i++){
@@ -44,3 +44,56 @@ window.addEventListener('DOMContentLoaded',()=>{
     })
     .catch((err)=>console.log(err));
 })
+
+var itemList = document.getElementById('list');
+itemList.addEventListener('click', ModifyItem1);
+
+function ModifyItem1(e){
+	e.preventDefault();
+
+	if(e.target.classList.contains('delete')){
+		var li = e.target.parentElement;
+		var text = li.innerText;
+		console.log(text);
+		var individualText = text.split(':');
+		var name=individualText[0];
+        var id;
+		// localStorage.removeItem(email);
+        axios.get('https://crudcrud.com/api/0e175eef7e044d61bbd9327343cc0dea/appointmentData')
+        .then((response)=>{
+            for(var i=0;i<response.data.length;i++){
+                if(response.data[i].name === name){
+                    id= response.data[i]._id;
+                    console.log(id)
+
+                }
+                url = 'https://crudcrud.com/api/0e175eef7e044d61bbd9327343cc0dea/appointmentData/'
+                const urlMain = url+id;
+                console.log(urlMain);
+                axios.delete(urlMain).then((res)=>console.log(res))
+		    .catch((err)=>console.log(err));
+            }
+        }).catch((err)=>{
+            console.log(err);
+        })
+       
+        itemList.removeChild(li);
+	}
+
+	else if(e.target.classList.contains('edit')){
+		var li = e.target.parentElement;
+		var text = li.innerText;
+		var individualText = text.split(":");
+		var email = individualText[1];
+		console.log(email);
+		var myObj1 = localStorage.getItem(email);
+		console.log(myObj1);
+		localStorage.removeItem(email);
+		myObj1DeStringfy = JSON.parse(myObj1);
+		console.log(myObj1DeStringfy);
+		document.getElementById('name').value=myObj1DeStringfy.name;
+		document.getElementById('email').value=myObj1DeStringfy.email;
+		document.getElementById('phone').value=myObj1DeStringfy.phone;
+		itemList.removeChild(li);
+	}
+}
